@@ -7,8 +7,10 @@ comments: true
 
 
 ### Team Tagline
+Driven by team work and powered by creativity. 
 
 ### Team Philosophy
+Code, Code, Code!
 
 <comment>
 Gallery of Pics, scroll to the right for more ...
