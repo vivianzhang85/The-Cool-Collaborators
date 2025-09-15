@@ -4,7 +4,7 @@ title: I'm [Your Full Name]
 hide: true
 ---
 
-Hi! My name is [Your Full Name]
+Hi! Our name is Cool Collaborators!
 
 ### Development Environment
 
