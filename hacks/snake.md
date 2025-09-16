@@ -24,31 +24,71 @@ permalink: /snake/
     }
 
     /* All screens style */
-    #gameover p, #setting p, #menu p{
-        font-size: 20px;
-    }
+    .game-screen {
+    display: none;
+    background: #ff69b4; /* bright pink */
+    color: #fff;
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    margin: 40px auto;
+    max-width: 600px;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 0 40px rgba(255,105,180,0.8); /* glowing effect */
+}
 
-    #gameover a, #setting a, #menu a{
-        font-size: 30px;
-        display: block;
-    }
+.screen-title {
+    font-size: 60px; /* BIG */
+    font-weight: bold;
+    text-shadow: 0 0 15px #fff;
+    margin-bottom: 20px;
+}
 
-    #gameover a:hover, #setting a:hover, #menu a:hover{
-        cursor: pointer;
-    }
+.screen-instruction {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
 
-    #gameover a:hover::before, #setting a:hover::before, #menu a:hover::before{
-        content: ">";
-        margin-right: 10px;
-    }
+.highlight-key {
+    background: #fff;
+    color: #ff69b4;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 18px;
+}
 
-    #menu{
-        display: block;
-    }
+.screen-buttons button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 22px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,255,255,0.6);
+    transition: all 0.2s ease;
+}
 
-    #gameover{
-        display: none;
-    }
+.btn-primary {
+    background-color: #fff;
+    color: #ff69b4;
+}
+
+.btn-primary:hover {
+    background-color: #ffd6eb;
+    box-shadow: 0 0 25px #fff;
+}
+
+.btn-secondary {
+    background-color: #ff1493;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #ff85c1;
+    box-shadow: 0 0 25px #fff;
+}
+
 
     #setting{
         display: none;
@@ -80,8 +120,8 @@ permalink: /snake/
         </div>
        <!-- Game Over Screen -->
 <div id="gameover" class="game-screen">
-    <h2 class="screen-title">Game Over</h2>
-    <p class="screen-instruction">Press <span class="highlight-key">Space</span> to try again</p>
+    <h1 class="screen-title">GAME OVER</h1>
+    <p class="screen-instruction">Press <span class="highlight-key">Space</span> to restart</p>
     <div class="screen-buttons">
         <button id="new_game1" class="btn-primary">New Game</button>
         <button id="setting_menu1" class="btn-secondary">Settings</button>
