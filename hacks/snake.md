@@ -71,7 +71,6 @@ permalink: /snake/
 <h2>Snake</h2>
 <div class="container">
     <p class="fs-4">Score: <span id="score_value">0</span></p>
-
     <div class="container bg-secondary" style="text-align:center;">
         <!-- Main Menu -->
         <div id="menu" class="py-4 text-light">
@@ -79,12 +78,15 @@ permalink: /snake/
             <a id="new_game" class="link-alert">new game</a>
             <a id="setting_menu" class="link-alert">settings</a>
         </div>
-        <!-- Game Over -->
-        <div id="gameover" class="py-4 text-light">
-            <p>Game Over, press <span style="background-color: #FFFFFF; color: #000000">space</span> to try again</p>
-            <a id="new_game1" class="link-alert">new game</a>
-            <a id="setting_menu1" class="link-alert">settings</a>
-        </div>
+       <!-- Game Over Screen -->
+<div id="gameover" class="game-screen">
+    <h2 class="screen-title">Game Over</h2>
+    <p class="screen-instruction">Press <span class="highlight-key">Space</span> to try again</p>
+    <div class="screen-buttons">
+        <button id="new_game1" class="btn-primary">New Game</button>
+        <button id="setting_menu1" class="btn-secondary">Settings</button>
+    </div>
+</div>
         <!-- Play Screen -->
         <canvas id="snake" class="wrap" width="320" height="320" tabindex="1"></canvas>
         <!-- Settings Screen -->
@@ -183,7 +185,7 @@ permalink: /snake/
             button_setting_menu.onclick = function(){showScreen(SCREEN_SETTING);};
             button_setting_menu1.onclick = function(){showScreen(SCREEN_SETTING);};
             // speed
-            setSnakeSpeed(150);
+            setSnakeSpeed(20);
             for(let i = 0; i < speed_setting.length; i++){
                 speed_setting[i].addEventListener("click", function(){
                     for(let i = 0; i < speed_setting.length; i++){
@@ -259,22 +261,34 @@ permalink: /snake/
                 }
             }
             // Snake eats food checker
-            if(checkBlock(snake[0].x, snake[0].y, food.x, food.y)){
-                snake[snake.length] = {x: snake[0].x, y: snake[0].y};
-                altScore(++score);
-                addFood();
-                activeDot(food.x, food.y);
-            }
-            // Repaint canvas
-            ctx.beginPath();
-            ctx.fillStyle = "red"; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            // Paint snake
-            for(let i = 0; i < snake.length; i++){
-                activeDot(snake[i].x, snake[i].y, "limegreen");
-            }
-            // Paint food green circle
-            activeDot(food.x, food.y, "green");
+if(checkBlock(snake[0].x, snake[0].y, food.x, food.y)){
+    for (let i = 0; i < 3; i++) {  // gain 3 blocks per food
+        snake.push({x: snake[0].x, y: snake[0].y});
+    }
+    altScore(++score);
+    addFood();
+    activeDot(food.x, food.y);
+}
+           // Repaint canvas (black background)
+ctx.fillStyle = "black";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// Paint snake with glow
+for(let i = 0; i < snake.length; i++){
+    ctx.fillStyle = "limegreen";        // snake color
+    ctx.shadowColor = "limegreen";      // glow color
+    ctx.shadowBlur = 15;                // glow intensity
+    ctx.fillRect(snake[i].x * BLOCK, snake[i].y * BLOCK, BLOCK, BLOCK);
+}
+ctx.shadowBlur = 0; // reset shadow
+
+// Paint food with glow
+ctx.fillStyle = "red";                  // food color
+ctx.shadowColor = "red";                // glow color
+ctx.shadowBlur = 15;
+ctx.fillRect(food.x * BLOCK, food.y * BLOCK, BLOCK, BLOCK);
+ctx.shadowBlur = 0; // reset shadow
+
             // Debug
             //document.getElementById("debug").innerHTML = snake_dir + " " + snake_next_dir + " " + snake[0].x + " " + snake[0].y;
             // Recursive call after speed delay, déjà vu
@@ -303,27 +317,32 @@ permalink: /snake/
         }
         /* Key Inputs and Actions */
         /////////////////////////////////////////////////////////////
-        let changeDir = function(key){
-            // test key and switch direction
-            switch(key) {
-                case 37:    // left arrow
-                    if (snake_dir !== 1)    // not right
-                        snake_next_dir = 3; // then switch left
-                    break;
-                case 38:    // up arrow
-                    if (snake_dir !== 2)    // not down
-                        snake_next_dir = 0; // then switch up
-                    break;
-                case 39:    // right arrow
-                    if (snake_dir !== 3)    // not left
-                        snake_next_dir = 1; // then switch right
-                    break;
-                case 40:    // down arrow
-                    if (snake_dir !== 0)    // not up
-                        snake_next_dir = 2; // then switch down
-                    break;
-            }
-        }
+      let changeDir = function(key){
+    // test key and switch direction
+    switch(key) {
+        case 37:    // left arrow
+        case 65:    // 'A'
+            if (snake_dir !== 1)    // not right
+                snake_next_dir = 3; // switch left
+            break;
+        case 38:    // up arrow
+        case 87:    // 'W'
+            if (snake_dir !== 2)    // not down
+                snake_next_dir = 0; // switch up
+            break;
+        case 39:    // right arrow
+        case 68:    // 'D'
+            if (snake_dir !== 3)    // not left
+                snake_next_dir = 1; // switch right
+            break;
+        case 40:    // down arrow
+        case 83:    // 'S'
+            if (snake_dir !== 0)    // not up
+                snake_next_dir = 2; // switch down
+            break;
+    }
+}
+
         /* Dot for Food or Snake part */
         /////////////////////////////////////////////////////////////
         let activeDot = function(x, y, color="#FFFFFF"){
