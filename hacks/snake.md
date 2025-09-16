@@ -117,6 +117,11 @@ permalink: /snake/
         // Canvas & Context
         const canvas = document.getElementById("snake");
         const ctx = canvas.getContext("2d");
+
+        // 🎨 Customizable colors
+        let bgColor = "black";        // background color
+        let snakeColor = "limegreen"; // snake color
+        let foodColor = "red";        // food color
         // HTML Game IDs
         const SCREEN_SNAKE = 0;
         const screen_snake = document.getElementById("snake");
