@@ -316,7 +316,7 @@ class GameBoard {
     if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) { this.grid[row][col] = color; return true; }
     return false;
   }
-  /* Checks 4-in-a-row from the last placed cell (row,col) in 4 directionss */
+  /* Checks 4-in-a-row from the last placed cell (row,col) in 4 directions */
   checkWin(row, col) {
     const color = this.grid[row][col]; if (!color) return false;
     const dirs = [[1,0],[0,1],[1,1],[1,-1]]; // vertical, horizontal, two diagonals
