@@ -15,7 +15,6 @@ permalink: /rock-paper-scissor/
 </div>
 
 <script type="module">
-  // --- UI (purple box) ---
     const instructionsStyle = `
   position: relative;
   margin: 64px auto 48px auto;
@@ -380,3 +379,4 @@ permalink: /rock-paper-scissor/
     alert("✂️ Try in the console:\n\nscissors.setWidth(150);");
   });
 </script>
+
