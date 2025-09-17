@@ -16,6 +16,10 @@ permalink: /cookie-clicker-game/
     class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 mb-2 rounded shadow">
     🖱️ Cursor (Cost: 15)
   </button>
+<button id="iceCreamMachineBtn"
+    class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 mb-2 rounded shadow">
+    🧊 Ice Cream Machine (Cost: 100)
+</button>
 <button id="factoryBtn"
     class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 mb-2 rounded shadow">
     🏭 Factory (Cost: 500)

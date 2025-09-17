@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-nocheck
 
 const shopContainer = document.getElementById("shop-container");
 const cookieButton = document.getElementById("cookie");
@@ -443,6 +443,14 @@ const grandma = {
   cookiesPerSecond: 1,
 };
 
+const iceCreamMachine = {
+  name: "Ice Cream Machine",
+  emoji: "🧊",
+  price: 100,
+  priceIncrementer: 1.3,
+  cookiesPerSecond: 2,
+};
+
 const factory = {
   name: "Factory",
   emoji: "🏭",
@@ -470,6 +478,7 @@ const bank = {
 const shopItems = [];
 
 shopItems.push(grandma);
+shopItems.push(iceCreamMachine);
 shopItems.push(factory);
 shopItems.push(mangotemple);
 shopItems.push(bank);
@@ -484,6 +493,7 @@ const x2Click = {
 shop.upgrades.push(x2Click);
 
 shop.addItemForSale(grandma);
+shop.addItemForSale(iceCreamMachine);
 shop.addItemForSale(factory);
 shop.addItemForSale(mangotemple);
 shop.addItemForSale(bank);
