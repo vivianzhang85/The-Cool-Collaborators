@@ -443,7 +443,7 @@ const grandma = {
   cookiesPerSecond: 1,
 };
 
-const iceCreamMachine = {
+const iceCream = {
   name: "Ice Cream Machine",
   emoji: "🧊",
   price: 100,
@@ -478,7 +478,7 @@ const bank = {
 const shopItems = [];
 
 shopItems.push(grandma);
-shopItems.push(iceCreamMachine);
+shopItems.push(iceCream);
 shopItems.push(factory);
 shopItems.push(mangotemple);
 shopItems.push(bank);
@@ -493,7 +493,7 @@ const x2Click = {
 shop.upgrades.push(x2Click);
 
 shop.addItemForSale(grandma);
-shop.addItemForSale(iceCreamMachine);
+shop.addItemForSale(iceCream);
 shop.addItemForSale(factory);
 shop.addItemForSale(mangotemple);
 shop.addItemForSale(bank);
