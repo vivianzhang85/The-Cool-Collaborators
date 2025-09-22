@@ -389,5 +389,161 @@ let computerScore = 0;
   document.getElementById("scissors-btn").addEventListener("click", () => {
     alert("✂️ Try in the console:\n\nscissors.setWidth(150);");
   });
+  /* =======================
+   🎛️ RPS Plugin Pack (Drop-in)
+   Paste below your existing code in the same <script type="module">
+   ======================= */
+
+// --- tiny helpers ---
+const $ = (sel) => document.querySelector(sel);
+const resultBoxEl = document.getElementById("resultBox");
+
+// --- 1) Floating HUD (score, reset, mute, auto) ---
+const hud = document.createElement("div");
+hud.style.cssText = `
+  position: sticky; top: 12px; margin: 0 auto 16px; z-index: 1001;
+  display:flex; gap:10px; align-items:center; justify-content:center;
+`;
+hud.innerHTML = `
+  <div style="background:#191919;border:2px solid #7a00ff;border-radius:12px;
+              padding:8px 12px;font:600 12px/1.2 system-ui, -apple-system, Segoe UI;
+              color:#fff; box-shadow:0 6px 22px rgba(122,0,255,.25);">
+    <span id="hudScore">Score → You: 0 | Computer: 0</span>
+    <span style="margin-left:10px; opacity:.7;">(R/P/S keys work)</span>
+    <div style="margin-top:6px; display:flex; gap:8px; justify-content:center;">
+      <button id="btnReset" style="padding:6px 10px;border-radius:8px;border:1px solid #7a00ff;background:#2a2a2a;color:#fff;cursor:pointer;">Reset</button>
+      <button id="btnMute"  style="padding:6px 10px;border-radius:8px;border:1px solid #7a00ff;background:#2a2a2a;color:#fff;cursor:pointer;">Mute: Off</button>
+      <button id="btnAuto"  style="padding:6px 10px;border-radius:8px;border:1px solid #7a00ff;background:#2a2a2a;color:#fff;cursor:pointer;">Auto-Demo: Off</button>
+    </div>
+  </div>
+`;
+document.getElementById("mainGameBox").prepend(hud);
+
+function updateHUD() {
+  $("#hudScore").textContent = `Score → You: ${playerScore} | Computer: ${computerScore}`;
+}
+
+// --- 2) Persist scores (localStorage) ---
+try {
+  const saved = JSON.parse(localStorage.getItem("rpsScore") || "{}");
+  if (Number.isFinite(saved.player) && Number.isFinite(saved.cpu)) {
+    playerScore = saved.player;
+    computerScore = saved.cpu;
+    updateHUD();
+  }
+} catch (_) {}
+
+function persistScores() {
+  localStorage.setItem("rpsScore", JSON.stringify({ player: playerScore, cpu: computerScore }));
+}
+
+// --- 3) Add sounds (WebAudio) with Mute toggle ---
+let audioCtx = null;
+let muted = false;
+function beep(freq = 440, dur = 0.12, type = "sine", gain = 0.06) {
+  if (muted) return;
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.value = gain;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start();
+  setTimeout(() => { o.stop(); }, dur * 1000);
+}
+function playWinSfx(){ beep(880, .08, "triangle", .08); setTimeout(()=>beep(1175, .1, "triangle", .08), 100); }
+function playLoseSfx(){ beep(330, .12, "sawtooth", .07); setTimeout(()=>beep(247, .14, "sawtooth", .07), 120); }
+function playTieSfx(){ beep(523, .08, "square", .06); setTimeout(()=>beep(523, .08, "square", .06), 100); }
+
+// --- 4) Confetti burst on wins (tiny canvas particles) ---
+const confettiCanvas = document.createElement("canvas");
+confettiCanvas.width = 360; confettiCanvas.height = 180;
+confettiCanvas.style.cssText = "position:absolute; pointer-events:none; inset:0; margin:auto; border-radius:12px;";
+document.getElementById("battleMount").style.position = "relative";
+document.getElementById("battleMount").appendChild(confettiCanvas);
+const cctx = confettiCanvas.getContext("2d");
+let confetti = [];
+function confettiBurst(n = 32) {
+  confetti = Array.from({length:n}, () => ({
+    x: Math.random()*confettiCanvas.width,
+    y: confettiCanvas.height/2,
+    vx: (Math.random()*2-1)*2.2,
+    vy: -Math.random()*3-1.5,
+    life: 60 + Math.random()*30,
+    r: 2 + Math.random()*3
+  }));
+}
+function confettiTick(){
+  cctx.clearRect(0,0,confettiCanvas.width, confettiCanvas.height);
+  confetti.forEach(p=>{
+    p.x += p.vx; p.y += p.vy; p.vy += 0.06; p.life--;
+    cctx.globalAlpha = Math.max(0, p.life/90);
+    cctx.beginPath(); cctx.arc(p.x,p.y,p.r,0,Math.PI*2); cctx.fill();
+  });
+  confetti = confetti.filter(p=>p.life>0);
+  requestAnimationFrame(confettiTick);
+}
+confettiTick();
+
+// --- 5) Keyboard controls: R / P / S ---
+document.addEventListener("keydown", (e)=>{
+  const k = e.key.toLowerCase();
+  if (k === "r") playRPS("rock");
+  if (k === "p") playRPS("paper");
+  if (k === "s") playRPS("scissors");
+});
+
+// --- 6) Auto-demo (plays itself) ---
+let autoTimer = null;
+function toggleAuto() {
+  if (autoTimer) {
+    clearInterval(autoTimer); autoTimer = null;
+    $("#btnAuto").textContent = "Auto-Demo: Off";
+  } else {
+    const choices = ["rock","paper","scissors"];
+    autoTimer = setInterval(()=> playRPS(choices[Math.floor(Math.random()*3)]), 1100);
+    $("#btnAuto").textContent = "Auto-Demo: On";
+  }
+}
+
+// --- 7) Buttons: reset / mute / auto ---
+$("#btnReset").addEventListener("click", ()=>{
+  playerScore = 0; computerScore = 0; updateHUD(); persistScores();
+});
+$("#btnMute").addEventListener("click", ()=>{
+  muted = !muted; $("#btnMute").textContent = `Mute: ${muted ? "On" : "Off"}`;
+});
+$("#btnAuto").addEventListener("click", toggleAuto);
+
+// --- 8) Wrap playRPS to add effects *after* the original runs (no logic change) ---
+const _playRPS = window.playRPS;
+window.playRPS = function(choice){
+  const ret = _playRPS(choice);      // run original logic
+  updateHUD();                       // refresh HUD
+  persistScores();                   // save scores
+
+  // inspect result text to decide SFX / confetti
+  const text = (resultBoxEl?.textContent || "").toLowerCase();
+  if (text.includes("you win")) { playWinSfx(); confettiBurst(36); }
+  else if (text.includes("you lose")) { playLoseSfx(); }
+  else if (text.includes("tie")) { playTieSfx(); }
+  return ret;
+};
+
+// --- 9) Tiny easter egg: Konami code swaps the background image ---
+const konami = ["arrowup","arrowup","arrowdown","arrowdown","arrowleft","arrowright","arrowleft","arrowright","b","a"];
+let konamiIdx = 0;
+document.addEventListener("keydown", (e)=>{
+  konamiIdx = (e.key.toLowerCase() === konami[konamiIdx]) ? konamiIdx+1 : 0;
+  if (konamiIdx === konami.length) {
+    konamiIdx = 0;
+    // swap to a second background (add your own image path if you want)
+    try {
+      bgImage.src = '{{site.baseurl}}/images/platformer/backgrounds/alien_planet2.jpg';
+      alert("🕹️ Konami unlocked! New background loaded.");
+    } catch(_) {}
+  }
+});
+
 </script>
 
