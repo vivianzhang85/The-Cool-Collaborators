@@ -303,7 +303,7 @@ let computerScore = 0;
       winner = computerChoice; loser = playerChoice;
     }
 
-    // --- Add scores here, inside playRPS ---
+    // --- Add scores here ---
     if(resultText === "You Win!") playerScore++;
     else if(resultText === "You Lose!") computerScore++;
     console.log(`Score → You: ${playerScore} | Computer: ${computerScore}`);
