@@ -15,6 +15,10 @@ permalink: /rock-paper-scissor/
 </div>
 
 <script type="module">
+
+  let playerScore = 0;
+let computerScore = 0;
+
     const instructionsStyle = `
   position: relative;
   margin: 64px auto 48px auto;
@@ -278,6 +282,7 @@ permalink: /rock-paper-scissor/
       console.log("Invalid choice. Use 'rock', 'paper', or 'scissors'.");
       return;
     }
+
     highlightImage(playerChoice+"-img");
 
     const computerChoice = choices[Math.floor(Math.random()*choices.length)];
@@ -298,6 +303,11 @@ permalink: /rock-paper-scissor/
       winner = computerChoice; loser = playerChoice;
     }
 
+    // --- Add scores here, inside playRPS ---
+    if(resultText === "You Win!") playerScore++;
+    else if(resultText === "You Lose!") computerScore++;
+    console.log(`Score → You: ${playerScore} | Computer: ${computerScore}`);
+
     document.getElementById("resultBox").innerHTML = `
       <p>You chose: <b>${playerChoice.toUpperCase()}</b></p>
       <p>Computer chose: <b>${computerChoice.toUpperCase()}</b></p>
@@ -309,7 +319,8 @@ permalink: /rock-paper-scissor/
     console.log(`You chose: ${playerChoice.toUpperCase()}`);
     console.log(`Computer chose: ${computerChoice.toUpperCase()}`);
     console.log(`Result: ${resultText}`);
-  };
+};
+
 
   class GameObject {
     constructor(id) {
